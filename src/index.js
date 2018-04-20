@@ -138,7 +138,12 @@ function addTimes(flat, cb) {
         } else {
           var versionMap = res[versionKeys[0]].time;
           var versions = Object.keys(versionMap);
-          versions.splice(0, 2);
+          // Remove any instances of `created` and `modified` to prevent semver
+          // from complaining.
+          versions = versions.filter(function (el) {
+            return el !== 'created' && el !== 'modified';
+          });
+
           dep.times = {};
           versions.forEach(function (v) {
             dep.times[v] = new Date(versionMap[v]);
